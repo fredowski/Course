@@ -54,12 +54,12 @@ toc: true
 
 ### Get the course materials here:
 
-Course materials (Release):
+Course materials:
 
-[https://github.com/fredowski/Course/releases](https://github.com/fredowski/Course/releases)
+[https://github.com/fredowski/Course/tree/tha](https://github.com/fredowski/Course/tree/tha)
 
-- Download the latest release
-- Unpack into a directory
+- Look in the "tha" branch
+- pdfs are in the "build" directory
 - There might be daily updates during the course!
 
 ### Additional course related links:
