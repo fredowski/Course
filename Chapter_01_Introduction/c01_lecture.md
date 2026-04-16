@@ -331,3 +331,33 @@ libs.tech/klayout/tech/sg13g2.lyp
 ### KLayout GDS2 viewer for IHP inverter
 
 ![](pics_lecture/klayout-inv-full.png)
+
+## Fabs
+
+### IHP - Leibniz Institute for High Performance Microelectronics
+
+[Wikipedia - IHP](https://en.wikipedia.org/wiki/Innovations_for_High_Performance_Microelectronics)
+
+
+![](pics_lecture/fab-ihp.jpeg)
+
+### SkyWater
+
+[Wikipedia - SkyWater](https://en.wikipedia.org/wiki/SkyWater_Technology)
+
+![](pics_lecture/fab-skywater.jpeg)
+
+### GlobalFoundries
+
+[Wikipedia - GlobalFoundries](https://en.wikipedia.org/wiki/GlobalFoundries)
+
+![](pics_lecture/fab-gf-dresden.jpeg)
+
+### TSMC - Taiwan Semiconductor Manufacturing Company
+
+[Wikipedia - TSMC](https://en.wikipedia.org/wiki/TSMC)
+
+[Google Maps - TSMC](https://maps.app.goo.gl/zmBJkQdME7Bf4fJW7)
+
+![](pics_lecture/fab-tsmc-hsinchu.png)
+
