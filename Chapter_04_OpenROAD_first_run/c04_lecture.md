@@ -22,6 +22,17 @@ toc: true
 - There are example designs avaiable.
 - You can start your own design.
 
+## Download the OpenRoad Flow Scripts from github
+
+I do a shallow clone of the git repository without the full history.
+
+```
+cd
+git clone --depth 5 --branch vhdl --single-branch https://github.com/fredowski/OpenROAD-flow-scripts.git
+```
+
+This creates the local copy in the folder "OpenROAD-flow-scripts". The difference to the official repository from OpenROAD is the VHDL support that I added.
+
 ## The Makefile
 
 Let's have a look into the Makefile first.
@@ -40,22 +51,83 @@ Of interest for this course are the lines regarding to the IHP PDK:
 
 ```
 #DESIGN_CONFIG=./designs/ihp-sg13g2/aes/config.mk
+DESIGN_CONFIG=./designs/ihp-sg13g2/counter/config.mk
 #DESIGN_CONFIG=./designs/ihp-sg13g2/ibex/config.mk
-DESIGN_CONFIG=./designs/ihp-sg13g2/gcd/config.mk
+#DESIGN_CONFIG=./designs/ihp-sg13g2/gcd/config.mk
+#DESIGN_CONFIG=./designs/ihp-sg13g2/murax/config.mk
 #DESIGN_CONFIG=./designs/ihp-sg13g2/spi/config.mk
 #DESIGN_CONFIG=./designs/ihp-sg13g2/riscv32i/config.mk
-#DESIGN_CONFIG=./designs/ihp-sg13g2/masked_aes/config.mk
+#DESIGN_CONFIG=./designs/ihp-sg13g2/i2c-gpio-expander/config.mk
 ```
 
-The ```gcd``` example is selected for the next run.
+The ```counter``` example is selected for the next run.
 
 ## The designs to run 
 
-### gcd (greatest common denominator)
+### counter - 16 bit modulo 65536 counter with enable (VHDL)
+
+- The counter design is included with the OpenROAD-flow-script examples.
+- It consists of only a single VHDL file, easy to read.
+- The counter is a synchronous 16 bit modulo 65536 counter with enable 
+
+###
+
+![GDS counter](pics_lecture/gds_counter.png "GDS from counter example")
+
+###
+
+counter files:
+
+```
+cd flow/designs/src/counter
+ls -la
+counter.vhd
+```
+
+```
+cd flow/designs/ihp-sg13g2/counter
+ls
+config.mk
+constraint.sdc
+```
+
+### Run the flow for counter
+
+Adapt the Makefile by uncommenting the counter design. Run the full flow for the counter example
+
+```
+cd flow
+make
+```
+
+Open the openroad gui to see the final layout
+
+```
+cd flow
+make gui_final
+```
+
+### Check the results and reports
+
+After each step the design database and reports are saved. The first step is the synthesis step from yosys that creates a verilog netlist with the standard cells. Check the netlist with:
+
+```
+cd flow/results/ihp-sg13g2/counter/base
+open 1_2_yosys.v
+```
+
+The synthesis report for the example shows the required standard cells and the corresponding area.
+
+```
+cd flow/reports/ihp-sg13g2/counter/base
+less synth_stat.txt
+```
+
+### gcd - greatest common divisor
 
 - The gcd design is included with the OpenROAD-flow-script examples.
-- It consists of only a single Verilog file, easy to read.
-- Should run on the course server in a few minutes.
+- It consists of only a single verilog file, easy to read.
+- The gcd design computes the greatest common divisor of two numbers
 
 ###
 
@@ -66,25 +138,59 @@ The ```gcd``` example is selected for the next run.
 gcd files:
 
 ```
-/src/gcd$ ls 
-gcd.v  
+cd flow/designs/src/gcd
+ls
+gcd.v
 README.md
+BUILD.bazel
 ```
 
 ```
-/ihp-sg13g2/gcd$ ls
-autotuner.json  
-config.mk               (important)
-constraint.sdc          (important)
-metadata-base-ok.json  
+cd flow/designs/ihp-sg13g2/gcd
+ls
+autotuner.json
+config.mk                (important)
+constraint.sdc           (important)
 rules-base.json
+```
+
+### Run the flow for gcd
+
+Adapt the Makefile by uncommenting the gcd design. Then run the full flow for the gcd example
+
+```
+cd flow
+make
+```
+
+Open the openroad gui to see the final layout
+
+```
+cd flow
+make gui_final
+```
+
+### Check the gcd results and reports
+
+Check the synthesis netlist with:
+
+```
+cd flow/results/ihp-sg13g2/gcd/base
+open 1_2_yosys.v
+```
+
+The synthesis report for example show the required standard cells and the corresponding area.
+
+```
+cd flow/reports/ihp-sg13g2/gcd/base
+less synth_stat.txt
 ```
 
 ### ibex: RISC-V core
 
 - The ibex design is included with the OpenROAD-flow-script examples.
 - It consists of many Verilog files, not that easy to read.
-- A single run might take more then 30 minutes on the course server.
+- A single run might take more then 30 minutes
 
 ### 
 
@@ -121,50 +227,10 @@ metadata-base-ok.json
 rules-base.json
 ```
 
-### masked_aes
-
-- The masked_aes design is part of a research project and is available on Github:
-    * [HEP Alliance - Masked AES](https://github.com/HEP-Alliance/masked-aes-tapeout)
-
-- It consists of three Verilog files, one of them >2000 lines of code.
-- Should run in a few minutes on the course server.
-
-**Special Features:**
-
-- Contains I/O Pads and a Padring
-- Has a README that contains the how-to of a sealring
-- Has a README that links to the Metall filler script
-
-###
-
-![GDS masked_aes](pics_lecture/gds_masked_aes.png)
-
-###
-
-masked_aes files:
-
-```
-ihp-sg13g2/masked_aes$ ls 
-config.mk  
-constraint.sdc  
-footprint.tcl  
-LICENSE  
-README.md  
-sealring.gds  
-src             (src directory!)
-```
-
-```
-ihp-sg13g2/masked_aes/src$ ls
-AES_Masked.v  
-AesTb.v  
-MaskedAes.v
-```
-
 ### lfsr
 
-- The lfsr design example must be created from the scratch.
-- The Verilog code is available in the lecture slides of chapter 3 and should become a single file.
+- The lfsr design example must be created from scratch.
+- The VHDL code is available in the lecture slides and should become a single file.
 - The structure of other examples must be copied for this.
 - The configuration files must be copied and adapted for this.
 - A single run should be very short.
@@ -172,22 +238,4 @@ MaskedAes.v
 ###
 
 ![GDS lfsr](pics_lecture/gds_lfsr.png)
-
-### A TinyTapeout design?
-
-- The design example must be created from the scratch.
-- The Verilog code is available as open-source via TinyTapeout
-- The structure of other examples must be copied for this.
-- The configuration files must be copied and adapted for this.
-- The run time is unpredicted.
-
-Suggestion:
-
-The VGA clock example from the pictures earlier:
-[https://tinytapeout.com/runs/ttihp0p2/tt_um_vga_clock](https://tinytapeout.com/runs/ttihp0p2/tt_um_vga_clock)
-
-### 
-
-![VGA Clock GDS render](pics_lecture/gds_vga_clock.png)
-
 
