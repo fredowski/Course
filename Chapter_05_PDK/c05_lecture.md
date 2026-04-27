@@ -398,7 +398,7 @@ END sg13g2_a21o_1
 ### Liberty files
 
 - Liberty files (.lib) contain information about timing, power and temperature of the cells.
-- The ihp130-sg13g2 PDK contains six different Liberty files for the standard cells.
+- The ihp130-sg13g2 PDK contains [six different Liberty files](https://github.com/IHP-GmbH/IHP-Open-PDK/tree/main/ihp-sg13g2/libs.ref/sg13g2_stdcell/lib) for the standard cells.
 - These six files are categorized by nominal voltages and nominal temperatures:
 
 Liberty file                         Voltage     Temperature 
@@ -449,6 +449,96 @@ sg13g2_stdcell_typ_1p50V_25C.lib      1.50 V      25° C
 
 ```
 
+### Cell A021: Liberty file - Output Pin X
+
+```
+    pin (X) {
+      direction : "output";
+      function : "((A1*A2)+B1)";
+      min_capacitance : 0.001;
+      max_capacitance : 0.3;
+      timing () {
+        related_pin : "A1";
+        sdf_cond : "B1 == 1'b0";
+        timing_sense : positive_unate;
+        timing_type : combinational;
+        when : "!B1";
+        cell_rise (TIMING_DELAY_7x7ds1) {
+          index_1 ("0.0186, 0.0966, 0.174, 0.3294, 0.6408, 1.263, 2.5074");
+          index_2 ("0.001, 0.0234, 0.039, 0.0648, 0.108, 0.18, 0.3");
+          values ( \
+            "0.0807687, 0.15146, 0.195473, 0.267231, 0.386899, 0.586296, 0.918436", \
+            "0.116643, 0.187459, 0.231451, 0.303439, 0.423359, 0.623019, 0.954578", \
+            "0.142067, 0.214006, 0.258032, 0.330026, 0.450148, 0.649615, 0.981533", \
+            "0.179515, 0.252822, 0.297045, 0.368987, 0.488854, 0.688005, 1.02054", \
+            "0.23237, 0.310828, 0.354629, 0.426105, 0.545922, 0.745166, 1.07728", \
+            "0.304206, 0.395567, 0.439475, 0.510596, 0.629839, 0.829268, 1.1608", \
+            "0.396364, 0.507762, 0.554141, 0.625639, 0.74573, 0.944857, 1.27636" \
+          );
+        }
+```
+
+### Cell A021: Liberty file - Output Pin X
+
+```
+    pin (X) {
+      direction : "output";
+```
+This is an output pin.
+```
+      function : "((A1*A2)+B1)";
+```
+The boolean function is X = (A1 AND A2) OR B1
+```
+      min_capacitance : 0.001;
+      max_capacitance : 0.3;
+```
+The minimum and maximum load capacitance. You must not attach more than 0.3 pF to the output X of the gate.
+
+### Cell A021: Liberty file - Output Pin X
+```
+      timing () {
+        related_pin : "A1";
+```
+This only relates to the timing arc from input A1. The timings are different for all input pins.
+```
+        sdf_cond : "B1 == 1'b0";
+```
+This timing is only relevant if the input B1 is 0. The reason is that if B1 is 1, then the output is 1 anyway and A1 has no influence on the output X because of the boolean function. This is for SDF export for gate-level simulation. See "when " below for STA tools.
+
+### Cell A021: Liberty file - Output Pin X
+
+```
+        timing_sense : positive_unate;
+```
+The output changes in the same direction as the input. When the input rises, then the output rises. Alternatives could be "negative_unate" for inverting behaviour like inverters and NAND or "non_unate" for XOR. 
+```
+        timing_type : combinational;
+```
+This is combinational gate and not a sequential one like a D-Flipflop.
+```
+        when : "!B1";
+```
+Same as "sdf_cond", but for static-timing analysis (STA) tools.
+
+### Cell A021: Liberty file - Timing table - Output Pin X
+
+```
+        cell_rise (TIMING_DELAY_7x7ds1) {
+          index_1 ("0.0186, 0.0966, 0.174, 0.3294, 0.6408, 1.263, 2.5074");
+          index_2 ("0.001, 0.0234, 0.039, 0.0648, 0.108, 0.18, 0.3");
+          values ( \
+            "0.0807687, 0.15146, 0.195473, 0.267231, 0.386899, 0.586296, 0.918436", \
+            "0.116643, 0.187459, 0.231451, 0.303439, 0.423359, 0.623019, 0.954578", \
+            "0.142067, 0.214006, 0.258032, 0.330026, 0.450148, 0.649615, 0.981533", \
+            "0.179515, 0.252822, 0.297045, 0.368987, 0.488854, 0.688005, 1.02054", \
+            "0.23237, 0.310828, 0.354629, 0.426105, 0.545922, 0.745166, 1.07728", \
+            "0.304206, 0.395567, 0.439475, 0.510596, 0.629839, 0.829268, 1.1608", \
+            "0.396364, 0.507762, 0.554141, 0.625639, 0.74573, 0.944857, 1.27636" \
+          );
+        }
+```
+This is a two dimensional table with CellDelay=f(input slew,load capacitance). For an input slew time of 0.0966ns and a load capacitance of 0.039pF, we have cell delay of 0.231451ns. The tool interpolates between those points in the table for intermediate values. Note that the delay varies widely between 0.08ns and 1.27ns (=16x).
 
 ## Ruleset documents
 
@@ -463,3 +553,23 @@ sg13g2_stdcell_typ_1p50V_25C.lib      1.50 V      25° C
 [https://github.com/IHP-GmbH/IHP-Open-PDK/tree/main/ihp-sg13g2/libs.doc/doc](https://github.com/IHP-GmbH/IHP-Open-PDK/tree/main/ihp-sg13g2/libs.doc/doc)
 
 ![Process specification](pics_lecture/process_specs.png)
+
+## Questions Timing
+
+#### Propagation Delay AO21_2
+
+- What is the propagation delay of cell AO21_2?
+- Compare the propagation delay between AO21 and AO21_2
+
+#### Limiting path on in counter design
+
+- What is the critical path in the counter design?
+- Add additional registers at the primary inputs and outputs of the counter and only investigate the internal register to register paths
+- What happens when you increase the counter width?
+- What is the maximum clock frequency?
+
+## Questions Pipelining
+
+#### Pipelining with feedback loop
+
+- Why is it difficult to increase the clock frequency of a counter with pipelining?
